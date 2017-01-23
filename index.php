@@ -1,5 +1,11 @@
 <?php
 
+// Just call
+// php -S localhost:8000
+// and go to http://localhost:8000
+
+
+
 require('Checkout.php');
 
 
@@ -17,42 +23,40 @@ $productsTable = array (
     array(
         'item' => 'bread',
         'price' => 20,
-        'offer' => '',
+        'offer' => '|',
     ),
     array(
         'item' => 'bananas',
         'price' => 15,
-        'offer' => '',
-    )
+        'offer' => '|',
+    ),
 );
 
-
-//print_r($productsTable);
-
-//foreach($productsTable as $row ) {
-//    $key = 'bread';
-//
-//    if($key = array_search($key, $row)) {
-//        var_dump($row);
-//        echo '<br />';
-//    }
-//}
+// Laad products information as table (item, price, offer)
+$item = new Checkout($productsTable);
 
 
+// scan Item by Item
+$cart = $item->scan('strawberries');
+$cart = $item->scan('biscuits');
+$cart = $item->scan('bread');
+$cart = $item->scan('strawberries');
+$cart = $item->scan('bread');
+$cart = $item->scan('strawberries');
+$cart = $item->scan('strawberries');
+$cart = $item->scan('bananas');
+$cart = $item->scan('strawberries');
+$cart = $item->scan('biscuits');
+$cart = $item->scan('bananas');
+$cart = $item->scan('bread');
+$cart = $item->scan('biscuits');
 
-$one = new Checkout($productsTable);
-$one->scan('biscuits');
-$one->scan('bread');
-$one->scan('biscuits');
-$one->scan('strawberries');
-$one->scan('strawberries');
-$one->scan('strawberries');
-$one->scan('strawberries');
-$one->scan('biscuits');
-$one->scan('bread');
-$one->scan('bananas');
 
-$basket = $one->getBasket();
-//print_r($basket);
+//$cart = $item->scan('bananas');
 
-$one->checkout();
+$shopping = $item->checkout($cart);
+
+print_r($shopping);
+
+
+
