@@ -26,24 +26,24 @@ class Checkout {
 
         $totalShopping = [];
 
-        foreach($scannedItems as $item => $quantity) {
+        foreach($scannedItems as $itemName => $quantity) {
 
-            $itemRow = $this->findItemFullPricing($item);
+            $itemRow = $this->findItemFullPricing($itemName);
 
             $itemOffer = $this->getItemOffer($itemRow);
 
 
-            if($itemOffer[0] != 0 and is_numeric($itemOffer[0])) {
+            if(is_numeric($itemOffer[0])) {
 
-                $totalPricePerItemOffer = $this->calculateTotalPerItemOffer($itemRow, $quantity, $itemOffer);
+                $totalPricePerItemOffer = $this->calculateTotalPerItemOffer($itemRow, $quantity);
 
-                $totalShopping[] = array('items' => $item, 'quantity' => $quantity, 'total' => $totalPricePerItemOffer);
+                $totalShopping[] = array('item' => $itemName, 'quantity' => $quantity, 'total' => $totalPricePerItemOffer);
 
             } else {
 
                 $totalPricePerItemNoOffer = $this->calculateTotalPerItemNoOffer($itemRow, $quantity);
 
-                $totalShopping[] = array('items' => $item, 'quantity' => $quantity, 'total' => $totalPricePerItemNoOffer);
+                $totalShopping[] = array('item' => $itemName, 'quantity' => $quantity, 'total' => $totalPricePerItemNoOffer);
 
             }
         }
@@ -52,26 +52,28 @@ class Checkout {
         return $totalShopping;
     }
 
-    private function findItemFullPricing($itemKey) {
+
+    public function findItemFullPricing($itemName) {
 
         foreach($this->productsTable as $row ) {
 
-            if($key = array_search($itemKey, $row)) {
+            if($key = array_search($itemName, $row)) {
 
                 return $row;
             }
         }
     }
 
-    private function getItemOffer($itemRow) {
+    public function getItemOffer($itemRow) {
 
         $itemOffer = explode( '|',$itemRow['offer'] );
         return $itemOffer;
 
     }
 
-    public function calculateTotalPerItemOffer($itemRow, $quantity, $itemOffer){
+    public function calculateTotalPerItemOffer($itemRow, $quantity){
 
+        $itemOffer = $this->getItemOffer($itemRow);
         $mod = $quantity % $itemOffer[0];
 
         if($mod == 0) {
@@ -96,7 +98,6 @@ class Checkout {
         return $price = $quantity * $itemRow['price'];
 
     }
-
 
 
 }
